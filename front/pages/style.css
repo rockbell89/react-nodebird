@@ -1,0 +1,42 @@
+.container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.mx-auto {
+  margin: 0 auto;
+}
+.right {
+  text-align: right;
+}
+
+.py-10 {
+  padding: 10px 0;
+}
+
+.py-20 {
+  padding: 20px 0;
+}
+
+.py-40 {
+  padding: 40px 0;
+}
+
+.center {
+  text-align: center;
+}
+
+.mt-10 {
+  margin-top: 10px;
+}
+
+.mt-20 {
+  margin-top: 20px;
+}
+
+.mt-40 {
+  margin-top: 40px;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #dcdcdc;
+}
