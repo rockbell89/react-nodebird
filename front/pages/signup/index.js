@@ -55,7 +55,7 @@ const Signup = () => {
   return (
     <>
       <Head>
-        <title>회원가입</title>
+        <title>회원가입 | Nodebird</title>
       </Head>
       <Card>
         <Form onFinish={onSubmit}>
