@@ -4,6 +4,6 @@ export const addPostAction = (data) => {
   console.log(data);
   return {
     type: POST_TYPE.ADD_POST,
-    data,
+    data, // data : data
   };
 };

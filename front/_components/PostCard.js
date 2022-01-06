@@ -23,7 +23,7 @@ const CardWrapper = styled.div`
 
 const PostCard = ({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
-  const id = useSelector((state) => state.user && state.user.id);
+  const userId = useSelector((state) => state.user.user?.id);
 
   const [liked, setLiked] = useState(false);
 
@@ -39,7 +39,7 @@ const PostCard = ({ post }) => {
     <CardWrapper key={post.id}>
       <Card
         cover={
-          post.images && post.images[0] && <PostImages images={post.images} />
+          post.Images && post.Images[0] && <PostImages images={post.Images} />
         }
         actions={[
           <RetweetOutlined key="retweet" />,
@@ -57,14 +57,14 @@ const PostCard = ({ post }) => {
             key="ellipsis"
             content={
               <Button.Group>
-                {id && post.user.id === id ? (
+                {userId && post.User.id === userId ? (
                   <>
                     <Button>수정</Button>
                     <Button type="danger">삭제</Button>
                   </>
                 ) : (
                   <Button>
-                    신고 {post.user.id} === {id}
+                    신고 {post.User.id} === {userId}
                   </Button>
                 )}
               </Button.Group>
@@ -73,11 +73,15 @@ const PostCard = ({ post }) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
-        extra={<FollowButton post={post} />}
       >
         <Card.Meta
-          avatar={<Avatar>{post.user.nickname[0]}</Avatar>}
-          title={post.user.nickname}
+          avatar={<Avatar>{post.User.nickname[0].toUpperCase()}</Avatar>}
+          title={
+            <div>
+              <span style={{ marginRight: "8px" }}>{post.User.nickname}</span>
+              <FollowButton post={post} />
+            </div>
+          }
           description={<PostCardContent postData={post.content} />}
         />
       </Card>

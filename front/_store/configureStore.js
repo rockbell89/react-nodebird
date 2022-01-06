@@ -4,9 +4,10 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import reducer from "../_reducers/index";
 
 /**
- * redux dev tools
- * npm i redux-devtools-extension
+ * react + context API => redux / mobx
+ * redux dev tools => npm i redux-devtools-extension
  * enhancer compose applyMiddleware
+ * next 에서는 Provider 필요없음 (**next-redux-wrapper @6.x 이상)
  */
 const configureStore = () => {
   const middleWares = [];

@@ -53,29 +53,31 @@ const PostImages = ({ images }) => {
   //   }
   return (
     <>
-      <div>
+      <div style={{ backgroundColor: "#f0f0f0" }}>
         <img
           role="presentation"
           src={images[0].src}
           alt={images[0].src}
-          width="50%"
+          width={images.length > 1 ? "50%" : "100%"}
           //   onClick={onZoom}
         />
-        <div
-          role="presentation"
-          style={{
-            display: "inline-block",
-            width: "50%",
-            textAlign: "center",
-            verticalAlign: "middle",
-          }}
-          //   onClick={onZoom}
-        >
-          <PlusOutlined />
-          <br />
-          {images.length - 1}
-          개의 사진 더보기
-        </div>
+        {images.length > 1 && (
+          <div
+            role="presentation"
+            style={{
+              display: "inline-block",
+              width: "50%",
+              textAlign: "center",
+              verticalAlign: "middle",
+            }}
+            //   onClick={onZoom}
+          >
+            <PlusOutlined />
+            <br />
+            {images.length - 1}
+            개의 사진 더보기
+          </div>
+        )}
       </div>
       {/* {showImagesZoom && <ImagesZoom images={images} onClose={onClose} />} */}
     </>

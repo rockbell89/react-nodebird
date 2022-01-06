@@ -1,4 +1,3 @@
-import AppLayout from "../../_components/AppLayout";
 import PostForm from "../../_components/PostForm";
 const Posts = () => {
   return (

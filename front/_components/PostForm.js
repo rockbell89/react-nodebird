@@ -11,7 +11,7 @@ const PostForm = () => {
 
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
-    console.log(imageInput.current);
+    console.log("imageInput.current", imageInput.current);
   }, [imageInput.current]);
 
   useEffect(() => {
@@ -41,10 +41,17 @@ const PostForm = () => {
         maxLength={140}
         placeholder="어떤 신기한 일이 있었나요?"
       />
-      <div>
+      <div style={{ marginTop: "8px" }}>
         <input type="file" multiple hidden ref={imageInput} />
-        <Button onClick={onClickImageUpload}>이미지 업로드</Button>
-        <Button type="primary" style={{ float: "right" }} htmlType="submit">
+        <Button size="medium" onClick={onClickImageUpload}>
+          이미지 업로드
+        </Button>
+        <Button
+          size="medium"
+          type="primary"
+          style={{ float: "right" }}
+          htmlType="submit"
+        >
           작성 완료
         </Button>
       </div>

@@ -3,7 +3,11 @@ import { Button } from "antd";
 import PropTypes from "prop-types";
 
 const FollowButton = ({ post }) => {
-  return <Button>팔로우</Button>;
+  return (
+    <Button size="small">
+      <small>팔로우</small>
+    </Button>
+  );
 };
 
 FollowButton.propTypes = {
