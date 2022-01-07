@@ -4,19 +4,19 @@ import PropTypes from "prop-types";
 
 const PostCardContent = ({ postData }) => (
   <div>
-    {postData.split(/(#[^\s#]+)/g).map((v) => {
-      if (v.match(/(#[^\s]+)/)) {
+    {postData.split(/(#[^\s#]+)/g).map((tag, index) => {
+      if (tag.match(/(#[^\s]+)/)) {
         return (
           <Link
-            href={{ pathname: "/hashtag", query: { tag: v.slice(1) } }}
-            as={`/hashtag/${v.slice(1)}`}
-            key={v}
+            href={{ pathname: "/hashtag", query: { tag: tag.slice(1) } }}
+            as={`/hashtag/${tag.slice(1)}`}
+            key={index}
           >
-            <a>{v}</a>
+            <a>{tag}</a>
           </Link>
         );
       }
-      return v;
+      return tag;
     })}
   </div>
 );

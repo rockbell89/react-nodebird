@@ -27,8 +27,8 @@ const IconButton = styled.div`
 `;
 
 const AppLayout = ({ children }) => {
-  const { isLoggedIn } = useSelector((state) => state.user);
-  // const isLoggedIn = true;
+  // const { isLoggedIn } = useSelector((state) => state.user);
+  const isLoggedIn = useSelector(() => true);
 
   if (isLoggedIn) {
     // 로그인 했을때
