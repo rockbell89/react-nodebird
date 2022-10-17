@@ -1,38 +1,15 @@
-import { all, call, fork, take, put, delay } from "redux-saga/effects";
+import postSaga from "./post_sagas";
+import userSaga from "./user_sagas";
+import { all, fork } from "redux-saga/effects";
 import axios from "axios";
 
-function loginAPI(data) {
-  return axios.post("/api/login", data);
-}
+axios.defaults.baseURL = "http://localhost:3065";
 
-function* logIn(action) {
-  try {
-    // const result = yield call(loginAPI, action.data);
-    yield delay(1000);
-    yield put({
-      type: "LOGIN_SUCCESS",
-      data: result.data,
-    });
-  } catch (err) {
-    yield put({
-      type: "LOGIN_FAILURE",
-      data: err.response.data,
-    });
-  }
-}
-// take, takeEvery, takeLatest <=> takeLeading
-// throttle
-function* watchLogin() {
-  yield takeLatest("LOG_IN", logIn());
-}
-function* watchLogout() {
-  yield takeLatest("LOG_OUT");
-}
-function* watchAddPost() {
-  yield takeLatest("ADD_POST");
-}
-
-// all([]) fork(비동기), call(동기)
 export default function* rootSaga() {
-  yield all([fork(watchLogin), fork(watchLogout), fork(watchAddPost)]);
+  console.log("saga 실행");
+  yield all([fork(userSaga), fork(postSaga)]);
 }
+
+// take (1회 요청), takeEvery (반복 요청), takeLatest (마지막 요청) <=> takeLeading (처음 요청)
+// throttle , debounce
+// all([]) fork(비동기), call(동기)

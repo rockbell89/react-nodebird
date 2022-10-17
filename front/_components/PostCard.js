@@ -10,18 +10,21 @@ import {
 } from "@ant-design/icons";
 import styled from "styled-components";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { removePostAction } from "../_actions/post_actions";
 
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import PostImages from "./PostImages";
 import FollowButton from "./FollowButton";
+import USER_TYPE from "../_types/user_types";
 
 const CardWrapper = styled.div`
   margin-bottom: 20px;
 `;
 
 const PostCard = ({ post }) => {
+  const dispatch = useDispatch();
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const userId = useSelector((state) => state.user.user?.id);
 
@@ -35,12 +38,35 @@ const PostCard = ({ post }) => {
     setCommentFormOpened((prev) => !prev);
   }, []);
 
+  const onRemovePost = useCallback(() => {
+    dispatch(removePostAction(post.id));
+    dispatch({
+      type: USER_TYPE.REMOVE_POST_OF_ME,
+      data: {
+        id: post.id,
+      },
+    });
+  }, []);
+
   return (
     <CardWrapper key={post.id}>
       <Card
         cover={
           post.Images && post.Images[0] && <PostImages images={post.Images} />
         }
+        title={
+          <Card.Meta
+            avatar={<Avatar>{post.User?.nickname[0].toUpperCase()}</Avatar>}
+            title={
+              <div>
+                <span style={{ marginRight: "8px" }}>
+                  {post.User?.nickname}
+                </span>
+              </div>
+            }
+          />
+        }
+        extra={<FollowButton post={post} />}
         actions={[
           <RetweetOutlined key="retweet" />,
           liked ? (
@@ -57,14 +83,16 @@ const PostCard = ({ post }) => {
             key="ellipsis"
             content={
               <Button.Group>
-                {userId && post.User.id === userId ? (
+                {userId && post.User?.id === userId ? (
                   <>
                     <Button>수정</Button>
-                    <Button type="danger">삭제</Button>
+                    <Button type="danger" onClick={onRemovePost}>
+                      삭제
+                    </Button>
                   </>
                 ) : (
                   <Button>
-                    신고 {post.User.id} === {userId}
+                    신고 {post.User?.id} === {userId}
                   </Button>
                 )}
               </Button.Group>
@@ -74,22 +102,13 @@ const PostCard = ({ post }) => {
           </Popover>,
         ]}
       >
-        <Card.Meta
-          avatar={<Avatar>{post.User.nickname[0].toUpperCase()}</Avatar>}
-          title={
-            <div>
-              <span style={{ marginRight: "8px" }}>{post.User.nickname}</span>
-              <FollowButton post={post} />
-            </div>
-          }
-          description={<PostCardContent postData={post.content} />}
-        />
+        <PostCardContent postData={post.content} />
       </Card>
       {commentFormOpened && (
         <>
           <CommentForm post={post} />
           <List
-            header={`${post.Comments.length} 댓글`}
+            header={`${post.Comments?.length} 댓글`}
             itemLayout="horizontal"
             dataSource={post.Comments}
             renderItem={(item) => (
@@ -119,7 +138,7 @@ const PostCard = ({ post }) => {
 
 PostCard.propTypes = {
   post: PropTypes.shape({
-    id: PropTypes.number,
+    id: PropTypes.number | PropTypes.string,
     User: PropTypes.object,
     content: PropTypes.string,
     createdAt: PropTypes.object,

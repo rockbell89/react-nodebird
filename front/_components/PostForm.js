@@ -2,32 +2,51 @@ import React, { useRef, useCallback, useState, useEffect } from "react";
 import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostAction } from "./../_actions/post_actions";
+import USER_TYPE from "../_types/user_types";
+import shortId from "shortid";
 
 const PostForm = () => {
-  const { imagePaths, postAdded } = useSelector((state) => state.post);
+  const { user } = useSelector((state) => state.user);
+  const { imagePaths, isComplete } = useSelector((state) => state.post);
   const [text, setText] = useState("");
   const dispatch = useDispatch();
   const imageInput = useRef();
 
-  const onClickImageUpload = useCallback(() => {
-    imageInput.current.click();
-    console.log("imageInput.current", imageInput.current);
-  }, [imageInput.current]);
-
   useEffect(() => {
-    if (postAdded) {
+    if (isComplete) {
+      console.log("ADD_POST_SUCCESS");
       setText("");
     }
-  }, [postAdded]);
 
-  const onChangeText = useCallback((e) => {
-    setText(e.target.value);
-  }, []);
+    return () => {};
+  }, [isComplete]);
+
+  const onClickImageUpload = useCallback(() => {
+    imageInput.current.click();
+  }, [imageInput.current]);
+
+  const onChangeText = useCallback(
+    (e) => {
+      setText(e.target.value);
+    },
+    [text]
+  );
 
   const onSubmit = useCallback(() => {
-    console.log("upload post");
-    dispatch(addPostAction());
-  }, []);
+    const id = shortId.generate();
+    dispatch(
+      addPostAction({
+        id,
+        content: text,
+      })
+    );
+    dispatch({
+      type: USER_TYPE.ADD_POST_TO_ME,
+      data: {
+        id,
+      },
+    });
+  }, [text]);
 
   return (
     <Form

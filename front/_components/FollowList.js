@@ -1,6 +1,8 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { List, Card, Divider, Button } from "antd";
-function FormList({ data, header }) {
+
+const FollowList = ({ data, header }) => {
   return (
     <div>
       <Divider>{header}</Divider>
@@ -20,6 +22,11 @@ function FormList({ data, header }) {
       />
     </div>
   );
-}
+};
 
-export default FormList;
+FollowList.propTypes = {
+  header: PropTypes.string.isRequired,
+  data: PropTypes.string.isRequired,
+};
+
+export default FollowList;

@@ -1,20 +1,33 @@
 import { Button, Form, Input } from "antd";
 import React, { useCallback, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addCommentAction } from "../_actions/post_actions";
 import PropTypes from "prop-types";
 
 const CommentForm = ({ post }) => {
+  const id = useSelector((state) => state.user.user?.id);
+  const dispatch = useDispatch();
   const [commentText, setCommentText] = useState("");
 
+  const onChangeCommentText = useCallback(
+    (e) => {
+      setCommentText(e.target.value);
+    },
+    [commentText]
+  );
+
   const onSubmitComment = useCallback(() => {
-    console.log(commentText);
+    dispatch(
+      addCommentAction({
+        content: commentText,
+        postId: post.id,
+        userId: id,
+      })
+    );
   }, [commentText]);
 
-  const onChangeCommentText = useCallback((e) => {
-    setCommentText(e.target.value);
-  }, []);
-
   return (
-    <Form onFinish={onSubmitComment}>
+    <Form onFinish={onSubmitComment} encType="multipart/form-data">
       <Form.Item style={{ position: "relative", margin: 0 }}>
         <Input.TextArea
           rows={4}
@@ -22,11 +35,11 @@ const CommentForm = ({ post }) => {
           onChange={onChangeCommentText}
         />
         <Button
-          style={{ position: "absolute", right: 0, bottom: -40 }}
+          style={{ position: "absolute", right: 0, bottom: -40, zIndex: 2 }}
           type="primary"
           htmlType="submit"
         >
-          삐약
+          댓글 작성
         </Button>
       </Form.Item>
     </Form>

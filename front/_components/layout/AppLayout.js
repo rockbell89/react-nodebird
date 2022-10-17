@@ -1,7 +1,7 @@
 import { useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import Link from "next/link";
-import { Input, Row, Col, Avatar, Card } from "antd";
+import { Input, Row, Col, Avatar, Card, Menu } from "antd";
 import {
   HomeOutlined,
   PlusCircleOutlined,
@@ -27,8 +27,7 @@ const IconButton = styled.div`
 `;
 
 const AppLayout = ({ children }) => {
-  // const { isLoggedIn } = useSelector((state) => state.user);
-  const isLoggedIn = useSelector(() => true);
+  const { isLoggedIn } = useSelector((state) => state.user);
 
   if (isLoggedIn) {
     // 로그인 했을때
@@ -40,7 +39,7 @@ const AppLayout = ({ children }) => {
               <Col span={8}>
                 <Link href="/">
                   <a>
-                    <Logo>BONGRAM</Logo>
+                    <Logo>BONGRAM {isLoggedIn ? "true" : "false"}</Logo>
                   </a>
                 </Link>
               </Col>
@@ -88,7 +87,6 @@ const AppLayout = ({ children }) => {
                   <div>{children}</div>
                 </Card>
               </Col>
-
               <Col xs={24} sm={24}>
                 <div className="center mt-40">Copyright(c) BONGRAM 2022 </div>
               </Col>

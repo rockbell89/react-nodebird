@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Card, Form, Input, Checkbox, Button, Divider, Row, Col } from "antd";
 import Link from "next/link";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { loginAction } from "../_actions/index";
 import { useForm } from "antd/lib/form/Form";
 
@@ -16,23 +16,35 @@ const Logos = styled.div`
 
 function LoginForm() {
   const [form] = useForm();
-  const [id] = useState("");
+  const [email] = useState("");
   const [password] = useState("");
+  const [remember, setRemeber] = useState(false);
   const [disabledButton, setDisabledButton] = useState(true);
+  const { isError } = useSelector((state) => state.user);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (isError) {
+      alert(isError);
+    }
+  }, [isError]);
 
   const onValuesChange = useCallback((changedValue, values) => {
     // console.log("changedValue", changedValue);
     // console.log("values", values);
   }, []);
 
+  const onChangeRemember = useCallback((e) => {
+    setRemeber(e.target.checked);
+  });
+
   const onFieldsChange = useCallback(() => {
-    const { id, password } = form.getFieldValue();
+    const { email, password } = form.getFieldValue();
     const hasErrors = form.getFieldsError().some(({ errors }) => {
       errors.length > 0;
     });
 
-    id && password ? setDisabledButton(hasErrors) : setDisabledButton(true);
+    email && password ? setDisabledButton(hasErrors) : setDisabledButton(true);
   }, []);
 
   const onFinish = useCallback((values) => {
@@ -58,14 +70,14 @@ function LoginForm() {
         >
           <Form.Item
             label="아이디"
-            name="id"
+            name="email"
             rules={[
               {
                 required: true,
                 message: "아이디를 입력해주세요",
               },
             ]}
-            value={id}
+            value={email}
           >
             <Input />
           </Form.Item>
@@ -83,7 +95,9 @@ function LoginForm() {
             <Input.Password />
           </Form.Item>
           <Form.Item name="remember" valuePropName="checked">
-            <Checkbox>로그인정보 기억하기</Checkbox>
+            <Checkbox checked={remember} onChange={onChangeRemember}>
+              로그인정보 기억하기
+            </Checkbox>
           </Form.Item>
           <Form.Item>
             <Button

@@ -2,7 +2,6 @@ import "antd/dist/antd.css";
 import PropTypes from "prop-types";
 import Head from "next/head";
 import styles from "./style.css";
-import AppLayout from "../_components/layout/AppLayout";
 import wrapper from "../_store/configureStore";
 
 const App = ({ Component }) => {
@@ -11,9 +10,7 @@ const App = ({ Component }) => {
       <Head>
         <title>BONGRAM</title>
       </Head>
-      <AppLayout>
-        <Component styles={styles} />
-      </AppLayout>
+      <Component styles={styles} />
     </>
   );
 };

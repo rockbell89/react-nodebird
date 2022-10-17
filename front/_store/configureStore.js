@@ -12,11 +12,21 @@ import rootSaga from "../_sagas";
  * enhancer compose applyMiddleware
  * next 에서는 Provider 필요없음 (**next-redux-wrapper @6.x 이상)
  */
+
+const loggerMiddleWare =
+  ({ dispatch, getState }) =>
+  (next) =>
+  (action) => {
+    console.log("loggerMiddleWare:", action);
+    if (typeof action === "function") return action(dispatch, getState);
+    return next(action);
+  };
+
 const configureStore = () => {
   // redux-thunk (비동기)
   // redux-saga (delay, take latest,throttle,debounce)
   const sagaMiddleware = createSagaMiddleware();
-  const middleWares = [thunkMiddleware, sagaMiddleware];
+  const middleWares = [thunkMiddleware, loggerMiddleWare, sagaMiddleware];
   const enhancer =
     process.env.NODE_ENV === "production"
       ? compose(applyMiddleware(...middleWares))

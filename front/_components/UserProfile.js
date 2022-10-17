@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { Card, Avatar, Popover, List, Button, Divider } from "antd";
-import { EditOutlined, SettingOutlined } from "@ant-design/icons";
+import { Card, Avatar, Popover, Button } from "antd";
+import { SettingOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { logoutAction } from "../_actions";
 import { useEffect } from "react";
@@ -22,19 +22,13 @@ const PopoverMenu = styled.div`
   }
 `;
 
-const user = {
-  id: 1,
-  nickname: "rockbell89",
-  description: "요즘 취미는 코딩",
-};
-
-function UserProfile(props) {
-  // const { user } = useSelector((state) => state.user);
+const UserProfile = (props) => {
+  const { user } = useSelector((state) => state.user);
   const router = useRouter();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log(user);
+    console.log("user profile", user);
     return () => {};
   }, [user]);
 
@@ -45,7 +39,7 @@ function UserProfile(props) {
   const onClickLogout = () => {
     console.log("logout");
     dispatch(logoutAction());
-    router.push("/");
+    // router.push("/");
   };
   return (
     <>
@@ -54,15 +48,15 @@ function UserProfile(props) {
           actions={[
             <TextWrapper>
               게시글
-              <br />0
+              <br /> {user.Posts?.length}
             </TextWrapper>,
             <TextWrapper>
               팔로워
-              <br />0
+              <br /> {user.Followers?.length}
             </TextWrapper>,
             <TextWrapper>
               팔로잉
-              <br />0
+              <br /> {user.Followings?.length}
             </TextWrapper>,
           ]}
           style={{
@@ -80,38 +74,52 @@ function UserProfile(props) {
             }
             title={
               <div>
-                <a href="/profile" style={{ color: "black" }}>
-                  {user.nickname}
-                </a>
-                <span>
-                  <Popover
-                    style={{ padding: 0 }}
-                    content={
-                      <PopoverMenuWrapper>
-                        <PopoverMenu>
-                          <Button type="text" onClick={onClickProfile} block>
-                            프로필편집
-                          </Button>
-                        </PopoverMenu>
-                        <PopoverMenu>
-                          <Button type="text" onClick={onClickLogout} block>
-                            로그아웃
-                          </Button>
-                        </PopoverMenu>
-                      </PopoverMenuWrapper>
-                    }
-                  >
-                    <SettingOutlined
-                      style={{
-                        color: "gray",
-                        fontSize: "16px",
-                        marginLeft: "8px",
-                        verticalAlign: "middle",
-                        cursor: "pointer",
-                      }}
-                    />
-                  </Popover>
-                </span>
+                <div>
+                  {user && (
+                    <a href="/profile" style={{ color: "black" }}>
+                      {user.nickname ? user.nickname : "GUEST"}{" "}
+                      {user.userId && <>({user.userId})</>}
+                    </a>
+                  )}
+                  <span>
+                    <Popover
+                      style={{ padding: 0 }}
+                      content={
+                        <PopoverMenuWrapper>
+                          <PopoverMenu>
+                            <Button type="text" onClick={onClickProfile} block>
+                              프로필편집
+                            </Button>
+                          </PopoverMenu>
+                          <PopoverMenu>
+                            <Button type="text" onClick={onClickLogout} block>
+                              로그아웃
+                            </Button>
+                          </PopoverMenu>
+                        </PopoverMenuWrapper>
+                      }
+                    >
+                      <SettingOutlined
+                        style={{
+                          color: "gray",
+                          fontSize: "16px",
+                          marginLeft: "8px",
+                          verticalAlign: "middle",
+                          cursor: "pointer",
+                        }}
+                      />
+                    </Popover>
+                  </span>
+                </div>
+                <p
+                  style={{
+                    color: "gray",
+                    fontSize: "12px",
+                    verticalAlign: "middle",
+                  }}
+                >
+                  {user.email}
+                </p>
               </div>
             }
             description={
@@ -122,8 +130,13 @@ function UserProfile(props) {
           />
         </Card>
       )}
+      {!user && (
+        <Button type="text" onClick={onClickLogout} block>
+          로그아웃
+        </Button>
+      )}
     </>
   );
-}
+};
 
 export default UserProfile;
