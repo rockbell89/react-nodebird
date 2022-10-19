@@ -5,23 +5,13 @@ import PostForm from "../_components/PostForm";
 import AppLayout from "../_components/layout/AppLayout";
 import { Divider, List } from "antd";
 import POST_TYPE from "../_types/post_types";
+import USER_TYPE from "../_types/user_types";
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { mainPosts, hasMorePost, isLoading } = useSelector(
+  const { mainPosts, hasMorePost, loadPostLoading } = useSelector(
     (state) => state.post
   );
-  const { isLoggedIn } = useSelector((state) => state.user);
-
-  useEffect(() => {
-    if (isLoggedIn) {
-      dispatch({
-        type: POST_TYPE.LOAD_POST_REQUEST,
-      });
-    }
-
-    return () => {};
-  }, [isLoggedIn]);
 
   useEffect(() => {
     function onScroll() {
@@ -29,7 +19,7 @@ const Home = () => {
         window.scrollY + document.documentElement.clientHeight >
         document.documentElement.scrollHeight - 600
       ) {
-        if (hasMorePost && !isLoading) {
+        if (hasMorePost && !loadPostLoading) {
           dispatch({
             type: POST_TYPE.LOAD_POST_REQUEST,
           });
@@ -40,7 +30,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [hasMorePost, isLoading]);
+  }, [hasMorePost, loadPostLoading]);
 
   return (
     <>

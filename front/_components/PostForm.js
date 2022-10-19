@@ -3,23 +3,21 @@ import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostAction } from "./../_actions/post_actions";
 import USER_TYPE from "../_types/user_types";
-import shortId from "shortid";
 
 const PostForm = () => {
   const { user } = useSelector((state) => state.user);
-  const { imagePaths, isComplete } = useSelector((state) => state.post);
+  const { imagePaths, addPostDone } = useSelector((state) => state.post);
   const [text, setText] = useState("");
   const dispatch = useDispatch();
   const imageInput = useRef();
 
   useEffect(() => {
-    if (isComplete) {
-      console.log("ADD_POST_SUCCESS");
+    if (addPostDone) {
       setText("");
     }
 
     return () => {};
-  }, [isComplete]);
+  }, [addPostDone]);
 
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
@@ -33,17 +31,17 @@ const PostForm = () => {
   );
 
   const onSubmit = useCallback(() => {
-    const id = shortId.generate();
     dispatch(
       addPostAction({
-        id,
+        User: user,
+        UserId: user.id,
         content: text,
       })
     );
     dispatch({
       type: USER_TYPE.ADD_POST_TO_ME,
       data: {
-        id,
+        UserId: user.id,
       },
     });
   }, [text]);
@@ -70,6 +68,7 @@ const PostForm = () => {
           type="primary"
           style={{ float: "right" }}
           htmlType="submit"
+          disabled={!text.length}
         >
           작성 완료
         </Button>

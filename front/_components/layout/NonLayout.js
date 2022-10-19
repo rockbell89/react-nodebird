@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { Row } from "antd";
+import { useSelector } from "react-redux";
+import { useRouter } from "next/router";
 
 export const NonLayout = ({ children }) => {
   return (

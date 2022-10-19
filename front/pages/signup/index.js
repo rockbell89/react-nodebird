@@ -1,11 +1,13 @@
 import { useEffect, useState, useCallback } from "react";
 import NonLayout from "../../_components/layout/NonLayout";
 import Head from "next/head";
-import { Input, Button, Form, Checkbox, Card } from "antd";
+import Link from "next/link";
+import { Input, Button, Form, Checkbox, Card, Row, Col } from "antd";
 import useInput from "../../_hooks/useInput";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import USER_TYPE from "../../_types/user_types";
+import router from "next/router";
 
 const ErrorMessage = styled.div`
   color: red;
@@ -21,6 +23,21 @@ const Signup = () => {
   const [term, setTerm] = useState("");
   const [termError, setTermError] = useState(false);
   const dispatch = useDispatch();
+  const { signUpDone, signUpError } = useSelector((state) => state.user);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (signUpDone) {
+      router.push("/");
+    }
+  }, [signUpDone]);
+
+  useEffect(() => {
+    if (signUpError) {
+      alert(signUpError);
+    }
+    return () => {};
+  }, [signUpError]);
 
   const onChangePasswordCheck = useCallback(
     (e) => {
@@ -58,10 +75,6 @@ const Signup = () => {
       data: { email, password, nickname },
     });
   }, [password, passwordCheck, term]);
-
-  useEffect(() => {
-    return () => {};
-  }, []);
 
   return (
     <>
@@ -143,6 +156,16 @@ const Signup = () => {
               >
                 회원가입
               </Button>
+            </div>
+            <div className="py-10">
+              <Row justify="space-between">
+                <Col>
+                  <p style={{ margin: "0" }}>이미 회원이신가요?</p>
+                </Col>
+                <Col>
+                  <Link href="/">로그인</Link>
+                </Col>
+              </Row>
             </div>
           </Form>
         </Card>

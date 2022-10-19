@@ -1,13 +1,22 @@
 import { Button, Form, Input } from "antd";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { addCommentAction } from "../_actions/post_actions";
 import PropTypes from "prop-types";
+import POST_TYPE from "../_types/post_types";
 
 const CommentForm = ({ post }) => {
-  const id = useSelector((state) => state.user.user?.id);
+  const { user } = useSelector((state) => state.user);
+  const { addCommentDone } = useSelector((state) => state.post);
   const dispatch = useDispatch();
   const [commentText, setCommentText] = useState("");
+
+  useEffect(() => {
+    if (addCommentDone) {
+      setCommentText("");
+    }
+    return () => {};
+  }, [addCommentDone]);
 
   const onChangeCommentText = useCallback(
     (e) => {
@@ -19,12 +28,13 @@ const CommentForm = ({ post }) => {
   const onSubmitComment = useCallback(() => {
     dispatch(
       addCommentAction({
+        User: user,
         content: commentText,
-        postId: post.id,
-        userId: id,
+        PostId: post.id,
+        UserId: user.id,
       })
     );
-  }, [commentText]);
+  }, [commentText, user.id]);
 
   return (
     <Form onFinish={onSubmitComment} encType="multipart/form-data">

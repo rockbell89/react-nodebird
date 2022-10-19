@@ -1,94 +1,102 @@
 import USER_TYPE from "../../_types/user_types";
 
 const initialState = {
-  isLoading: true,
-  isLoggedIn: false,
-  isError: null,
-  isComplete: false,
   user: null,
+  isLoggedIn: false,
+  logInLoading: true,
+  logInError: null,
+  logInDone: false,
+  logOutLoading: true,
+  logOutError: false,
+  logOutDone: false,
   signUpData: {},
+  signUpLoading: true,
+  signUpError: false,
+  signUpDone: false,
+  unfollowLoading: true,
+  unfollowError: false,
+  unfollowDone: false,
+  followLoading: true,
+  followError: false,
+  followDone: false,
+  loadMyInfoLoading: true,
+  loadMyInfoError: false,
+  loadMyInfoDone: false,
+  changeNicknameLoading: false,
+  changeNicknameDone: false,
+  changeNicknameError: null,
 };
-
-const dummyUser = (data) => ({
-  ...data,
-  id: 1,
-  userId: "rockbell89",
-  email: "rockbell89@gmail.com",
-  nickname: "록벨",
-  Posts: [
-    // { id: 1 }
-  ],
-  Followings: [
-    {
-      id: 0,
-    },
-  ],
-  Followers: [
-    // {
-    //   id: 2,
-    //   userId: "bongbong89",
-    //   email: "bongbong89@gmail.com",
-    //   nickname: "봉봉",
-    // },
-  ],
-});
 
 // 이전상태 + 액션 => 다음 상태
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
+    // login
     case USER_TYPE.LOG_IN_REQUEST:
       return {
         ...state,
-        isLoading: true,
+        logInLoading: true,
+        logInDone: false,
+        logInError: null,
       };
     case USER_TYPE.LOG_IN_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        logInLoading: false,
+        logInDone: true,
         isLoggedIn: true,
-        user: dummyUser(action.data),
+        user: action.data,
       };
     case USER_TYPE.LOG_IN_FAILURE:
       return {
         ...state,
-        isLoading: false,
-        isLoggedIn: false,
-        isError: action.error,
+        logInLoading: false,
+        logInError: action.error,
       };
+    // logout
     case USER_TYPE.LOG_OUT_REQUEST:
       return {
         ...state,
-        isLoading: true,
+        logOutLoading: true,
+        logOutDone: false,
+        logOutError: null,
       };
     case USER_TYPE.LOG_OUT_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        logOutLoading: false,
+        logOutDone: true,
         isLoggedIn: false,
+        user: null,
       };
     case USER_TYPE.LOG_OUT_FAILURE:
       return {
         ...state,
-        isLoading: false,
-        isError: action.error,
+        logOutLoading: false,
+        logOutError: action.error,
       };
+    // signup
     case USER_TYPE.SIGN_UP_REQUEST:
       return {
         ...state,
-        isLoading: true,
+        signUpLoading: true,
+        signUpDone: false,
+        signUpError: null,
       };
     case USER_TYPE.SIGN_UP_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        signUpLoading: false,
+        signUpDone: true,
         signUpData: action.data,
       };
     case USER_TYPE.SIGN_UP_FAILURE:
       return {
         ...state,
-        isLoading: false,
-        isError: action.error,
+        signUpLoading: false,
+        signUpError: action.error,
+        signUpData: null,
       };
+    // my post
     case USER_TYPE.ADD_POST_TO_ME:
       return {
         ...state,
@@ -96,63 +104,118 @@ const userReducer = (state = initialState, action) => {
           ...state.user,
           Posts: [
             {
-              id: action.data.id,
+              id: action.data.PostId,
             },
             ...state.user.Posts,
           ],
         },
       };
-
     case USER_TYPE.REMOVE_POST_OF_ME:
       return {
         ...state,
         user: {
           ...state.user,
-          Posts: state.user.Posts.filter((post) => post.id !== action.data.id),
+          Posts: state.user.Posts.filter(
+            (post) => post.id !== action.data.PostId
+          ),
         },
       };
+    // my unfollow
     case USER_TYPE.UNFOLLOW_REQUEST:
       return {
         ...state,
-        isLoading: true,
+        unfollowLoading: true,
+        unfollowDone: false,
+        unfollowError: action.error,
       };
     case USER_TYPE.UNFOLLOW_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        unfollowLoading: false,
+        unfollowDone: true,
         user: {
           ...state.user,
           Followings: state.user.Followings.filter(
-            (user) => user.id !== action.data.id
+            (user) => user.id !== action.data.UserId
           ),
         },
       };
     case USER_TYPE.UNFOLLOW_FAILURE:
       return {
         ...state,
-        isLoading: false,
-        isError: action.error,
+        unfollowLoading: false,
+        unfollowError: action.error,
       };
+    // my follow
     case USER_TYPE.FOLLOW_REQUEST:
       return {
         ...state,
-        isLoading: true,
+        followLoading: true,
+        followDone: false,
+        followError: null,
       };
     case USER_TYPE.FOLLOW_SUCCESS:
       return {
         ...state,
-        isLoading: false,
+        followLoading: false,
+        followDone: true,
         user: {
           ...state.user,
-          Followings: state.user.Followings.concat({ id: action.data.id }),
+          Followings: state.user.Followings.concat({ id: action.data.UserId }),
         },
       };
     case USER_TYPE.FOLLOW_FAILURE:
       return {
         ...state,
-        isLoading: false,
-        isError: action.error,
+        followLoading: false,
+        followError: action.error,
       };
+    // my info
+    case USER_TYPE.LOAD_MY_INFO_REQUEST:
+      return {
+        ...state,
+        loadMyInfoLoading: true,
+        loadMyInfoDone: false,
+        loadMyInfoError: null,
+      };
+    case USER_TYPE.LOAD_MY_INFO_SUCCESS:
+      return {
+        ...state,
+        loadMyInfoLoading: false,
+        loadMyInfoDone: true,
+        user: action.data,
+      };
+    case USER_TYPE.LOAD_MY_INFO_FAILURE:
+      return {
+        ...state,
+        loadMyInfoLoading: false,
+        loadMyInfoError: action.error,
+      };
+    // CHANGE NICKNAME
+    case USER_TYPE.CHANGE_NICKNAME_REQUEST:
+      return {
+        ...state,
+        changeNicknameLoading: true,
+        changeNicknameDone: false,
+        changeNicknameError: null,
+      };
+    case USER_TYPE.CHANGE_NICKNAME_SUCCESS:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameDone: true,
+        user: {
+          ...state.user,
+          nickname: action.data.nickname,
+        },
+      };
+    case USER_TYPE.CHANGE_NICKNAME_FAILURE:
+      return {
+        ...state,
+        changeNicknameLoading: false,
+        changeNicknameError: action.error,
+      };
+    // default
     default:
       return state;
   }

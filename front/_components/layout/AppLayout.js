@@ -1,4 +1,4 @@
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
 import Link from "next/link";
 import { Input, Row, Col, Avatar, Card, Menu } from "antd";
@@ -11,6 +11,8 @@ import LoginForm from "../LoginForm";
 import UserProfile from "../UserProfile";
 import styled from "styled-components";
 import { useEffect } from "react";
+import USER_TYPE from "../../_types/user_types";
+import POST_TYPE from "../../_types/post_types";
 
 const Logo = styled.div`
   font-size: 20px;
@@ -27,9 +29,23 @@ const IconButton = styled.div`
 `;
 
 const AppLayout = ({ children }) => {
-  const { isLoggedIn } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-  if (isLoggedIn) {
+  const { user } = useSelector((state) => state.user);
+  const { mainPosts } = useSelector((state) => state.post);
+
+  useEffect(() => {
+    dispatch({
+      type: USER_TYPE.LOAD_MY_INFO_REQUEST,
+    });
+    if (user && mainPosts?.length === 0) {
+      dispatch({
+        type: POST_TYPE.LOAD_POST_REQUEST,
+      });
+    }
+  }, []);
+
+  if (user) {
     // 로그인 했을때
     return (
       <>
@@ -39,7 +55,7 @@ const AppLayout = ({ children }) => {
               <Col span={8}>
                 <Link href="/">
                   <a>
-                    <Logo>BONGRAM {isLoggedIn ? "true" : "false"}</Logo>
+                    <Logo>BONGRAM</Logo>
                   </a>
                 </Link>
               </Col>

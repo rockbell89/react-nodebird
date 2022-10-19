@@ -1,19 +1,17 @@
 import POST_TYPE from "../_types/post_types";
 
 export const addPostAction = (data) => {
-  console.log("addPostAction", data);
   return {
-    type: POST_TYPE.ADD_POST_SUCCESS,
+    type: POST_TYPE.ADD_POST_REQUEST,
     data,
   };
 };
 
 export const removePostAction = (postId) => {
-  console.log("removePostAction", postId);
   return {
-    type: POST_TYPE.REMOVE_POST_SUCCESS,
+    type: POST_TYPE.REMOVE_POST_REQUEST,
     data: {
-      id: postId,
+      PostId: postId,
     },
   };
 };
@@ -21,7 +19,7 @@ export const removePostAction = (postId) => {
 export const addCommentAction = (data) => {
   console.log("addCommentAction", data);
   return {
-    type: POST_TYPE.ADD_COMMENT_SUCCESS,
+    type: POST_TYPE.ADD_COMMENT_REQUEST,
     data,
   };
 };

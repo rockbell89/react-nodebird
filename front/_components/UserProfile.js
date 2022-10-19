@@ -23,23 +23,16 @@ const PopoverMenu = styled.div`
 `;
 
 const UserProfile = (props) => {
-  const { user } = useSelector((state) => state.user);
+  const { user, logOutDone } = useSelector((state) => state.user);
   const router = useRouter();
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    console.log("user profile", user);
-    return () => {};
-  }, [user]);
 
   const onClickProfile = () => {
     router.push("/profile");
   };
 
   const onClickLogout = () => {
-    console.log("logout");
     dispatch(logoutAction());
-    // router.push("/");
   };
   return (
     <>
