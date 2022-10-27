@@ -25,6 +25,15 @@ const initialState = {
   changeNicknameLoading: false,
   changeNicknameDone: false,
   changeNicknameError: null,
+  loadFollowersLoading: true,
+  loadFollowersDone: false,
+  loadFollowersError: null,
+  loadFollowingsLoading: true,
+  loadFollowingsDone: false,
+  loadFollowingsError: null,
+  removeFollowerLoading: true,
+  removeFollowerDone: false,
+  removeFollowerError: null,
 };
 
 // 이전상태 + 액션 => 다음 상태
@@ -136,7 +145,7 @@ const userReducer = (state = initialState, action) => {
         user: {
           ...state.user,
           Followings: state.user.Followings.filter(
-            (user) => user.id !== action.data.UserId
+            (following) => following.id !== action.data.UserId
           ),
         },
       };
@@ -161,7 +170,7 @@ const userReducer = (state = initialState, action) => {
         followDone: true,
         user: {
           ...state.user,
-          Followings: state.user.Followings.concat({ id: action.data.UserId }),
+          Followings: [{ id: action.data.UserId }, ...state.user.Followings],
         },
       };
     case USER_TYPE.FOLLOW_FAILURE:
@@ -214,6 +223,80 @@ const userReducer = (state = initialState, action) => {
         ...state,
         changeNicknameLoading: false,
         changeNicknameError: action.error,
+      };
+    // load followers
+    case USER_TYPE.LOAD_FOLLOWERS_REQUEST:
+      return {
+        ...state,
+        loadFollowersLoading: true,
+        loadFollowersDone: false,
+        loadFollowersError: null,
+      };
+    case USER_TYPE.LOAD_FOLLOWERS_SUCCESS:
+      return {
+        ...state,
+        loadFollowersLoading: false,
+        loadFollowersDone: true,
+        user: {
+          ...state.user,
+          Followers: action.data,
+        },
+      };
+    case USER_TYPE.LOAD_FOLLOWERS_FAILURE:
+      return {
+        ...state,
+        loadFollowersLoading: false,
+        loadFollowersError: action.error,
+      };
+    // load followings
+    case USER_TYPE.LOAD_FOLLOWINGS_REQUEST:
+      return {
+        ...state,
+        loadFollowingsLoading: true,
+        loadFollowingsDone: false,
+        loadFollowingsError: null,
+      };
+    case USER_TYPE.LOAD_FOLLOWINGS_SUCCESS:
+      return {
+        ...state,
+        loadFollowingsLoading: false,
+        loadFollowingsDone: true,
+        user: {
+          ...state.user,
+          Followings: action.data,
+        },
+      };
+    case USER_TYPE.LOAD_FOLLOWINGS_FAILURE:
+      return {
+        ...state,
+        loadFollowingsLoading: false,
+        loadFollowingsError: action.error,
+      };
+    // remove follower
+    case USER_TYPE.REMOVE_FOLLOWER_REQUEST:
+      return {
+        ...state,
+        removeFollowerLoading: true,
+        removeFollowerDone: false,
+        removeFollowerError: null,
+      };
+    case USER_TYPE.REMOVE_FOLLOWER_SUCCESS:
+      return {
+        ...state,
+        removeFollowerLoading: false,
+        removeFollowerDone: true,
+        user: {
+          ...state.user,
+          Followers: state.user.Followers.filter(
+            (follow) => follow.id !== action.data.UserId
+          ),
+        },
+      };
+    case USER_TYPE.REMOVE_FOLLOWER_SUCCESS:
+      return {
+        ...state,
+        removeFollowerLoading: false,
+        removeFollowerError: action.error,
       };
     // default
     default:

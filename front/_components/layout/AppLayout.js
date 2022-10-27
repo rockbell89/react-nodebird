@@ -38,7 +38,10 @@ const AppLayout = ({ children }) => {
     dispatch({
       type: USER_TYPE.LOAD_MY_INFO_REQUEST,
     });
-    if (user && mainPosts?.length === 0) {
+  }, []);
+
+  useEffect(() => {
+    if (!mainPosts.length) {
       dispatch({
         type: POST_TYPE.LOAD_POST_REQUEST,
       });

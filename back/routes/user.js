@@ -6,6 +6,7 @@ const passport = require("passport");
 const db = require("../models");
 const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
 
+// login
 router.post("/login", isNotLoggedIn, (req, res, next) => {
   passport.authenticate("local", (error, user, info) => {
     if (error) {
@@ -47,6 +48,7 @@ router.post("/login", isNotLoggedIn, (req, res, next) => {
   })(req, res, next);
 });
 
+// logout
 router.post("/logout", isLoggedIn, (req, res) => {
   req.logout();
   req.session.destroy();
@@ -76,10 +78,12 @@ router.get("/", async (req, res, next) => {
           {
             model: User,
             as: "Followings",
+            attributes: ["id"],
           },
           {
             model: User,
             as: "Followers",
+            attributes: ["id"],
           },
         ],
       });
@@ -93,6 +97,7 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// signup
 router.post("/", async (req, res, next) => {
   try {
     const user = await User.findOne({
@@ -118,7 +123,94 @@ router.post("/", async (req, res, next) => {
 });
 
 // follow
+router.patch("/:userId/follow", async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: parseInt(req.params.userId),
+      },
+    });
+    if (!user) return res.status(403).send("존재하지 않는 사용자입니다");
+    await user.addFollowers(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
 
+// unfollow
+router.delete("/:userId/follow", async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: parseInt(req.params.userId),
+      },
+    });
+    if (!user) return res.status(403).send("존재하지 않는 사용자입니다");
+    await user.removeFollowers(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// get followers
+router.get("/followers", async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: parseInt(req.user.id),
+      },
+    });
+    console.log("user", user);
+    if (!user) return res.status(403).send("존재하지 않는 사용자입니다");
+    const followers = await user.getFollowers();
+    console.log("followers", followers);
+    res.status(200).json(followers);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// get followings
+router.get("/followings", async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: parseInt(req.user.id),
+      },
+    });
+    if (!user) return res.status(403).send("존재하지 않는 사용자입니다");
+    const followings = await user.getFollowings();
+    console.log("followings", followings);
+    res.status(200).json(followings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// remove follower
+router.delete("/follower/:userId", async (req, res, next) => {
+  try {
+    const user = await User.findOne({
+      where: {
+        id: parseInt(req.params.userId),
+      },
+    });
+    if (!user) return res.status(403).send("존재하지 않는 사용자입니다");
+    await user.removeFollowings(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// change nicnake
 router.patch("/nickname", isLoggedIn, async (req, res, next) => {
   try {
     const nickname = User.findOne({

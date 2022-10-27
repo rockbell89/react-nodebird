@@ -17,8 +17,19 @@ import PostCardContent from "./PostCardContent";
 import POST_TYPE from "../_types/post_types";
 import FollowButton from "./FollowButton";
 import { removePostAction } from "../_actions/post_actions";
+import styled from "styled-components";
 
 moment.locale("ko");
+
+const CommentFormWrapper = styled.div`
+  padding: 1em;
+  background-color: #f5f5f5;
+`;
+
+const ReteweetWrapper = styled.div`
+  padding: 1em;
+  background-color: #e2e6ff;
+`;
 
 const PostCard = ({ post }) => {
   const dispatch = useDispatch();
@@ -96,6 +107,14 @@ const PostCard = ({ post }) => {
 
   return (
     <div style={{ marginBottom: 20 }}>
+      {post.RetweetId && (
+        <ReteweetWrapper className="text-small">
+          {post.RetweetId
+            ? `${post.User?.nickname}님이 리트윗하셨습니다.`
+            : null}
+        </ReteweetWrapper>
+      )}
+
       <Card
         cover={post.Images?.[0] && <PostImages images={post.Images} />}
         actions={[
@@ -137,7 +156,25 @@ const PostCard = ({ post }) => {
           </Popover>,
         ]}
         title={
-          post.RetweetId ? `${post.User?.nickname}님이 리트윗하셨습니다.` : null
+          <>
+            <Card.Meta
+              avatar={
+                <Link href={`/user/${post.User?.id}`} prefetch={false}>
+                  <a>
+                    <Avatar>{post.User?.nickname[0]}</Avatar>
+                  </a>
+                </Link>
+              }
+              title={
+                <>
+                  <div className="m-0">{post.User?.nickname}</div>
+                  <small className="mt-0">
+                    {moment(post.createdAt).fromNow()}
+                  </small>
+                </>
+              }
+            />
+          </>
         }
         extra={user.id && <FollowButton post={post} />}
       >
@@ -149,9 +186,6 @@ const PostCard = ({ post }) => {
               )
             }
           >
-            <div style={{ float: "right" }}>
-              {moment(post.createdAt).format("YYYY.MM.DD")}
-            </div>
             <Card.Meta
               avatar={
                 <Link href={`/user/${post.Retweet.User.id}`} prefetch={false}>
@@ -172,32 +206,17 @@ const PostCard = ({ post }) => {
           </Card>
         ) : (
           <>
-            <div style={{ float: "right" }}>
-              {moment(post.createdAt).format("YYYY.MM.DD")}
-            </div>
-            <Card.Meta
-              avatar={
-                <Link href={`/user/${post.User?.id}`} prefetch={false}>
-                  <a>
-                    <Avatar>{post.User?.nickname[0]}</Avatar>
-                  </a>
-                </Link>
-              }
-              title={post.User?.nickname}
-              description={
-                <PostCardContent
-                  editMode={editMode}
-                  onChangePost={onChangePost}
-                  onCancelUpdate={onCancelUpdate}
-                  content={post.content}
-                />
-              }
+            <PostCardContent
+              editMode={editMode}
+              onChangePost={onChangePost}
+              onCancelUpdate={onCancelUpdate}
+              content={post.content}
             />
           </>
         )}
       </Card>
       {commentFormOpened && (
-        <div>
+        <CommentFormWrapper>
           <CommentForm post={post} />
           <List
             header={`${post.Comments?.length} Comments`}
@@ -220,7 +239,7 @@ const PostCard = ({ post }) => {
               </li>
             )}
           />
-        </div>
+        </CommentFormWrapper>
       )}
     </div>
   );
