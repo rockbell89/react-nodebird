@@ -169,6 +169,33 @@ const postReducer = (state = initialState, action) => {
         draft.unlikePostLoading = false;
         draft.unlikePostError = action.error;
         break;
+      // UPLOAD IMAGE
+      case POST_TYPE.UPLOAD_IMAGES_REQUEST:
+        draft.uploadImagesLoading = true;
+        draft.uploadImagesDone = false;
+        draft.uploadImagesError = null;
+        draft.imagePaths = null;
+        break;
+
+      case POST_TYPE.UPLOAD_IMAGES_SUCCESS: {
+        draft.uploadImagesLoading = false;
+        draft.imagePaths = action.data;
+        draft.uploadImagesDone = true;
+        break;
+      }
+      case POST_TYPE.UPLOAD_IMAGES_FAILURE:
+        draft.uploadImagesLoading = false;
+        draft.uploadImagesError = action.error;
+        break;
+      // REMOVE
+      case POST_TYPE.REMOVE_IMAGE:
+        {
+          draft.imagePaths = draft.imagePaths.filter(
+            (image, index) => index !== action.data
+          );
+        }
+
+        break;
 
       default:
         break;

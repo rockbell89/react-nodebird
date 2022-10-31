@@ -148,6 +148,27 @@ function* unlikePost(action) {
   }
 }
 
+function uploadImagesAPI(data) {
+  console.log("uploadImagesAPI", data);
+  return axios.post(`/post/images`, data);
+}
+
+function* uploadImages(action) {
+  try {
+    const result = yield call(uploadImagesAPI, action.data);
+    console.log("uploadImages", action.data);
+    yield put({
+      type: POST_TYPE.UPLOAD_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: POST_TYPE.UPLOAD_IMAGES_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 function* watchAddPost() {
   yield takeLatest(POST_TYPE.ADD_POST_REQUEST, addPost);
 }
@@ -172,6 +193,10 @@ function* watchUnlikePost() {
   yield takeLatest(POST_TYPE.UNLIKE_POST_REQUEST, unlikePost);
 }
 
+function* watchUploadImages() {
+  yield takeLatest(POST_TYPE.UPLOAD_IMAGES_REQUEST, uploadImages);
+}
+
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
@@ -180,5 +205,6 @@ export default function* postSaga() {
     fork(watchLoadPosts),
     fork(watchLikePost),
     fork(watchUnlikePost),
+    fork(watchUploadImages),
   ]);
 }

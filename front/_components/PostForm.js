@@ -3,6 +3,7 @@ import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import { addPostAction } from "./../_actions/post_actions";
 import USER_TYPE from "../_types/user_types";
+import POST_TYPE from "../_types/post_types";
 
 const PostForm = () => {
   const { user } = useSelector((state) => state.user);
@@ -21,6 +22,7 @@ const PostForm = () => {
 
   const onClickImageUpload = useCallback(() => {
     imageInput.current.click();
+    console.log(imageInput.current);
   }, [imageInput.current]);
 
   const onChangeText = useCallback(
@@ -31,20 +33,35 @@ const PostForm = () => {
   );
 
   const onSubmit = useCallback(() => {
-    dispatch(
-      addPostAction({
-        User: user,
-        UserId: user.id,
-        content: text,
-      })
-    );
-    dispatch({
-      type: USER_TYPE.ADD_POST_TO_ME,
-      data: {
-        UserId: user.id,
-      },
+    const formData = new FormData();
+    imagePaths.forEach((image) => {
+      formData.append("image", image);
     });
-  }, [text]);
+    formData.append("content", text);
+
+    dispatch(addPostAction(formData));
+  }, [text, imagePaths]);
+
+  const onChangeImages = useCallback((e) => {
+    const imageData = new FormData();
+    console.log("imageData", imageData);
+    [].forEach.call(e.target.files, (file) => {
+      // Array.prototype.forEach.call
+      imageData.append("image", file);
+      console.log("file", file);
+    });
+    dispatch({
+      type: POST_TYPE.UPLOAD_IMAGES_REQUEST,
+      data: imageData,
+    });
+  });
+
+  const onRemoveImage = useCallback((index) => {
+    dispatch({
+      type: POST_TYPE.REMOVE_IMAGE,
+      data: index,
+    });
+  }, []);
 
   return (
     <Form
@@ -59,7 +76,14 @@ const PostForm = () => {
         placeholder="어떤 신기한 일이 있었나요?"
       />
       <div style={{ marginTop: "8px" }}>
-        <input type="file" multiple hidden ref={imageInput} />
+        <input
+          type="file"
+          name="image"
+          multiple
+          hidden
+          ref={imageInput}
+          onChange={onChangeImages}
+        />
         <Button size="medium" onClick={onClickImageUpload}>
           이미지 업로드
         </Button>
@@ -75,16 +99,16 @@ const PostForm = () => {
       </div>
       <div>
         {imagePaths &&
-          imagePaths.map((fileName) => {
+          imagePaths.map((fileName, index) => {
             return (
               <div key={fileName} style={{ display: "inline-block" }}>
                 <img
-                  src={"http://localhost:3000/" + fileName}
+                  src={"http://localhost:3065/" + fileName}
                   style={{ width: "200px" }}
                   alt={fileName}
                 />
                 <div>
-                  <Button>제거</Button>
+                  <Button onClick={() => onRemoveImage(index)}>제거</Button>
                 </div>
               </div>
             );
