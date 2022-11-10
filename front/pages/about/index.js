@@ -82,15 +82,17 @@ const About = () => {
   );
 };
 
-export const getStaticProps = wrapper.getStaticProps(async (context) => {
-  context.store.dispatch({
-    type: USER_TYPE.LOAD_USER_REQUEST,
-    data: {
-      UserId: 2,
-    },
-  });
-  context.store.dispatch(END);
-  await context.store.sagaTask.toPromise();
-});
+export const getServerSideProps = wrapper.getServerSideProps(
+  async (context) => {
+    context.store.dispatch({
+      type: USER_TYPE.LOAD_USER_REQUEST,
+      data: {
+        UserId: 2,
+      },
+    });
+    context.store.dispatch(END);
+    await context.store.sagaTask.toPromise();
+  }
+);
 
 export default About;
