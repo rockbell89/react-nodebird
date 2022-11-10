@@ -24,6 +24,8 @@ const dotenv = require("dotenv");
 const morgan = require("morgan");
 const path = require("path");
 dotenv.config();
+const hpp = require("hpp");
+const helmet = require("helmet");
 
 db.sequelize
   .sync()
