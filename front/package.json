@@ -4,14 +4,18 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "next"
+    "dev": "next",
+    "build": "cross-env ANALYZE=true NODE_ENV=production next build"
   },
   "author": "rockbell89",
   "license": "ISC",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
+    "@next/bundle-analyzer": "^13.0.2",
     "antd": "^4.17.4",
     "axios": "^0.24.0",
+    "babel-plugin-styled-components": "^2.0.7",
+    "cross-env": "^7.0.3",
     "dotenv": "^16.0.2",
     "faker": "^5.5.3",
     "immer": "^9.0.15",

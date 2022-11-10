@@ -117,7 +117,9 @@ function LoginForm() {
                 <p style={{ margin: "0" }}>아직 회원이 아니신가요?</p>
               </Col>
               <Col>
-                <Link href="/signup">회원가입</Link>
+                <Link href="/signup">
+                  <a>회원가입</a>
+                </Link>
               </Col>
             </Row>
           </div>

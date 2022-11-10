@@ -7,7 +7,7 @@ import useInput from "../../_hooks/useInput";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import USER_TYPE from "../../_types/user_types";
-import router from "next/router";
+import { useRouter } from "next/router";
 
 const ErrorMessage = styled.div`
   color: red;
