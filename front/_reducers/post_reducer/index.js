@@ -40,6 +40,10 @@ const initialState = {
   retweetLoading: false,
   retweetDone: false,
   retweetError: null,
+  getPostLoading: false,
+  getPostDone: false,
+  getPostError: null,
+  singlePost: [],
 };
 
 // reducer = 이전상태 + 액션 => 다음 상태
@@ -66,9 +70,21 @@ const postReducer = (state = initialState, action) => {
         draft.loadPostError = action.error;
         break;
 
-      // case POST_TYPE.LOAD_POST_RESET:
-      //   draft.isLoading = false;
-      //   draft.mainPosts = [];
+      // GET POST (SINGLE POST)
+      case POST_TYPE.GET_POST_REQUEST:
+        draft.getPostLoading = true;
+        draft.getPostDone = false;
+        draft.getPostError = null;
+        break;
+      case POST_TYPE.GET_POST_SUCCESS:
+        draft.getPostLoading = false;
+        draft.getPostDone = true;
+        draft.singlePost = action.data;
+        break;
+      case POST_TYPE.GET_POST_FAILURE:
+        draft.getPostLoading = false;
+        draft.getPostError = action.error;
+        break;
 
       // ADD POST
       case POST_TYPE.ADD_POST_REQUEST:

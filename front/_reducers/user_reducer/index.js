@@ -34,6 +34,10 @@ const initialState = {
   removeFollowerLoading: true,
   removeFollowerDone: false,
   removeFollowerError: null,
+  loadUserLoading: true,
+  loadUserDone: false,
+  loadUserError: null,
+  userInfo: null,
 };
 
 // 이전상태 + 액션 => 다음 상태
@@ -297,6 +301,27 @@ const userReducer = (state = initialState, action) => {
         ...state,
         removeFollowerLoading: false,
         removeFollowerError: action.error,
+      };
+    // load followers
+    case USER_TYPE.LOAD_USER_REQUEST:
+      return {
+        ...state,
+        loadUserLoading: true,
+        loadUserDone: false,
+        loadUserError: null,
+      };
+    case USER_TYPE.LOAD_USER_SUCCESS:
+      return {
+        ...state,
+        loadUserLoading: false,
+        loadUserDone: true,
+        userInfo: action.data,
+      };
+    case USER_TYPE.LOAD_USER_FAILURE:
+      return {
+        ...state,
+        loadUserLoading: false,
+        loadUserError: action.error,
       };
     // default
     default:

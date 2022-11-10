@@ -37,7 +37,7 @@ const PostCard = ({ post }) => {
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const { user } = useSelector((state) => state.user);
   const [editMode, setEditMode] = useState(false);
-  const liked = post.Likers?.find((liker) => liker.id === user.id);
+  const liked = post.Likers?.find((liker) => liker.id === user?.id);
 
   const onClickUpdate = useCallback(() => {
     setEditMode(true);
@@ -61,49 +61,49 @@ const PostCard = ({ post }) => {
   );
 
   const onLike = useCallback(() => {
-    if (!user.id) {
+    if (!user?.id) {
       return alert("로그인이 필요합니다.");
     }
     return dispatch({
       type: POST_TYPE.LIKE_POST_REQUEST,
       data: {
         PostId: post.id,
-        UserId: user.id,
+        UserId: user?.id,
       },
     });
-  }, [user.id]);
+  }, [user?.id]);
   const onUnlike = useCallback(() => {
-    if (!user.id) {
+    if (!user?.id) {
       return alert("로그인이 필요합니다.");
     }
     return dispatch({
       type: POST_TYPE.UNLIKE_POST_REQUEST,
       data: {
         PostId: post.id,
-        UserId: user.id,
+        UserId: user?.id,
       },
     });
-  }, [user.id]);
+  }, [user?.id]);
   const onToggleComment = useCallback(() => {
     setCommentFormOpened((prev) => !prev);
   }, []);
 
   const onRemovePost = useCallback(() => {
-    if (!user.id) {
+    if (!user?.id) {
       return alert("로그인이 필요합니다.");
     }
     return dispatch(removePostAction(post.id));
-  }, [user.id]);
+  }, [user?.id]);
 
   const onRetweet = useCallback(() => {
-    if (!user.id) {
+    if (!user?.id) {
       return alert("로그인이 필요합니다.");
     }
     return dispatch({
       type: POST_TYPE.RETWEET_REQUEST,
       data: post.id,
     });
-  }, [user.id]);
+  }, [user?.id]);
 
   return (
     <div style={{ marginBottom: 20 }}>
@@ -133,7 +133,7 @@ const PostCard = ({ post }) => {
             key="more"
             content={
               <Button.Group>
-                {user.id && post.User?.id === user.id ? (
+                {user?.id && post.User?.id === user?.id ? (
                   <>
                     {!post.RetweetId && (
                       <Button onClick={onClickUpdate}>수정</Button>
@@ -176,7 +176,7 @@ const PostCard = ({ post }) => {
             />
           </>
         }
-        extra={user.id && <FollowButton post={post} />}
+        extra={user?.id && <FollowButton post={post} />}
       >
         {post.RetweetId && post.Retweet ? (
           <Card

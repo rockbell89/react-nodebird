@@ -35,9 +35,6 @@ function* logOut(action) {
       type: USER_TYPE.LOG_OUT_SUCCESS,
       data: result.data,
     });
-    // yield put({
-    //   type: POST_TYPE.LOAD_POST_RESET,
-    // });
   } catch (err) {
     yield put({
       type: USER_TYPE.LOG_OUT_FAILURE,
@@ -199,6 +196,27 @@ function* removeFollower(action) {
   }
 }
 
+function loadUserInfoAPI(data) {
+  console.log(data);
+  return axios.get(`/user/${data.UserId}`);
+}
+
+function* loadUserInfo(action) {
+  try {
+    const result = yield call(loadUserInfoAPI, action.data);
+    console.log(action);
+    yield put({
+      type: USER_TYPE.LOAD_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    yield put({
+      type: USER_TYPE.LOAD_USER_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
 //
 function* watchLogIn() {
   yield takeLatest(USER_TYPE.LOG_IN_REQUEST, logIn);
@@ -238,6 +256,10 @@ function* watchRemoveFollower() {
   yield takeLatest(USER_TYPE.REMOVE_FOLLOWER_REQUEST, removeFollower);
 }
 
+function* watchLoadUser() {
+  yield takeLatest(USER_TYPE.LOAD_USER_REQUEST, loadUserInfo);
+}
+
 export default function* userSaga() {
   yield all([
     fork(watchLogIn),
@@ -250,5 +272,6 @@ export default function* userSaga() {
     fork(watchLoadFollowers),
     fork(watchLoadFollowings),
     fork(watchRemoveFollower),
+    fork(watchLoadUser),
   ]);
 }

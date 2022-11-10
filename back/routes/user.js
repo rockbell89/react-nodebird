@@ -97,6 +97,48 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+// get user
+router.get("/:userId", async (req, res, next) => {
+  console.log("get user");
+  try {
+    const user = await User.findOne({
+      where: {
+        id: req.params.userId,
+      },
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Post,
+        },
+        {
+          model: User,
+          as: "Followings",
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followers",
+          attributes: ["id"],
+        },
+      ],
+    });
+    if (user) {
+      const userInfo = user.toJSON();
+      userInfo.Posts = userInfo.Posts.length;
+      userInfo.Followers = userInfo.Followers.length;
+      userInfo.Followings = userInfo.Followings.length;
+      res.status(200).send(userInfo);
+    } else {
+      res.status(404).send("존재하지않는 사용자입니다");
+    }
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 // signup
 router.post("/", async (req, res, next) => {
   try {

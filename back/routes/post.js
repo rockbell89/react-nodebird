@@ -72,6 +72,52 @@ router.get("/", async (req, res, next) => {
   }
 });
 
+router.get("/:postId", async (req, res, next) => {
+  try {
+    const post = await Post.findOne({
+      where: {
+        id: req.params.postId,
+      },
+      include: [
+        {
+          model: Post,
+          as: "Retweet",
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+            {
+              model: Image,
+            },
+          ],
+        },
+        {
+          model: User,
+          attributes: ["id", "nickname"],
+        },
+        {
+          model: Image,
+        },
+        {
+          model: Comment,
+          include: [
+            {
+              model: User,
+              attributes: ["id", "nickname"],
+            },
+          ],
+        },
+      ],
+    });
+    if (!post) return res.status(403).send("존재하지 않는 게시글입니다");
+    res.status(200).json(post);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+});
+
 // create
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
