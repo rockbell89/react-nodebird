@@ -34,7 +34,14 @@ db.sequelize
 passportConfig();
 
 // middleware
-app.use(morgan("dev")); // request debugging
+
+if (process.env.NODE_ENV === "production") {
+  app.use(morgan("combined"));
+  app.use(hpp());
+  app.use(helmet());
+} else {
+  app.use(morgan("dev")); // request debugging
+}
 app.use(
   cors({
     origin: process.env.SITE_URL, // true - dev
